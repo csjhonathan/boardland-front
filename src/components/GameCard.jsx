@@ -1,18 +1,18 @@
 /*eslint-disable react/prop-types*/
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
-export default function GameCard({id, name, image, price, cart, onCart, setCart, setTotal}){
+import { useNavigate } from 'react-router-dom';
+export default function GameCard({id, name, image, price, sessionData, setSessionData, onCart}){
+	const navigate = useNavigate();
 	function handleCart(id){
 
-		const gameOnCart = cart.find(game => game.id === id);
+		const gameOnCart = sessionData.cart.find(game => game.id === id);
 		if(gameOnCart){
-			const updatedCart = cart.filter(game => game.id!==id);
+			const updatedCart = sessionData.cart.filter(game => game.id!==id);
 			const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-			setTotal(total);
-			setCart(updatedCart);
+			setSessionData({...sessionData, cart : updatedCart ,total});
 			return;
 		}
-
 		const game = {
 			id,
 			name,
@@ -20,16 +20,14 @@ export default function GameCard({id, name, image, price, cart, onCart, setCart,
 			price,
 		};
 
-		const updatedCart =[...cart, game];
+		const updatedCart = [...sessionData.cart, game];
 		const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-
-		setTotal(total);
-		setCart(updatedCart);
+		setSessionData({...sessionData, cart : updatedCart ,total});
 	}
 	return(
-		<CardContainer>
+		<CardContainer >
 			<CardImage src={image} alt = {`imagem referente ao jogo ${name}`}/>
-			<CardName>
+			<CardName >
 				{name}
 			</CardName>
 			<CardPrice>
@@ -38,6 +36,7 @@ export default function GameCard({id, name, image, price, cart, onCart, setCart,
 			<CardButton onCart = {onCart} onClick={()=> handleCart(id)}>
 				{onCart ? 'No Carrinho' : 'Adicionar ao carrinho'}
 			</CardButton>
+			<Details onClick={() => navigate(`/game/${id}`)}>Ver detalhes</Details>
 		</CardContainer>
 	);
 }
@@ -46,7 +45,7 @@ const CardContainer = styled.div`
   position: relative;
   background-color: ${COLORS.main};
   width: 100px;
-  height: 140px;
+  height: 150px;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
@@ -62,6 +61,7 @@ const CardImage = styled.img`
   width: 85px;
   height: 45px;
   border-radius: 5px;
+  object-fit: contain;
 `;
 const CardName = styled.p`
   align-self: flex-start;
@@ -93,4 +93,18 @@ const CardButton = styled.button`
   font-size: 10px;
   color: ${COLORS.neutral};
   transition: all .5s;
+`;
+
+const Details = styled.button`
+  width: 80px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-items: center;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  color: ${COLORS.neutral};
+  background-color: transparent;
 `;

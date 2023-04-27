@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import GameCard from '../components/GameCard.jsx';
 import styled from 'styled-components';
 import Footer from '../components/Footer.jsx';
+import { useContext } from 'react';
+import SessionContext from '../context/sessionContext.js';
+import HashLoaderScreen from '../components/HashLoader.jsx';
+import COLORS from '../constants/colors.js';
 export default function HomePage(){
-	const [games, setGames] = useState([]);
-	const [cart, setCart] = useState([]);
-	const [total, setTotal] = useState(0);
+	const [games, setGames] = useState(null);
+	const {sessionData, setSessionData} = useContext(SessionContext);
 	useEffect(() => {
 		getAllGames();
 	}, []);
@@ -19,6 +22,9 @@ export default function HomePage(){
 			alert(err.response.data.message);
 		}
 	}
+
+	if(!games) return <HashLoaderScreen color={COLORS.secondary}/>;
+	
 	return(
 		<>
 			<Container>
@@ -32,18 +38,16 @@ export default function HomePage(){
 							price = {price}
 							min = {min}
 							max = {max}
-							onCart = {cart.some(game => game.id===_id)}
-							cart = {cart}
-							setCart = {setCart}
-							total = {total}
-							setTotal = {setTotal}  
+							onCart = {sessionData.cart.some(game => game.id===_id)}
+							sessionData = {sessionData}
+							setSessionData = {setSessionData}
 						/>
 					);
 				})}
 			</Container>
 			<Footer 
-				total = {total}
-				cart = {cart}
+				total = {sessionData.total}
+				cart = {sessionData.cart}
 			/>
 		</>
 	);

@@ -4,7 +4,7 @@ import {GiPerspectiveDiceSixFacesSix} from 'react-icons/gi';
 export default function Header(){
 	return(
 		<HeaderContainer>
-			B<GiPerspectiveDiceSixFacesSix/>rdLand
+			B<GiPerspectiveDiceSixFacesSix/>ardLand
 		</HeaderContainer>
 	);
 }
