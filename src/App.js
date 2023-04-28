@@ -4,8 +4,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage.jsx';
 import Header from './components/Header.jsx';
 import GamePage from './pages/GamePage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import SignUpPage from './pages/SignUpPage.jsx';
 import SessionContext from './context/sessionContext.js';
 import { useState } from 'react';
+
 export default function App() {
 	const [sessionData, setSessionData] = useState({
 		cart : [], total : 0,
@@ -17,6 +20,8 @@ export default function App() {
 				<GlobalStyles/>
 				<Header/>
 				<Routes>
+					<Route path='/login' element = {<LoginPage/>}/>
+					<Route path='/signup' element = {<SignUpPage/>}/>
 					<Route path='/' element = {<HomePage/>}/>
 					<Route path='/game/:ID' element = {<GamePage/>}/>
 				</Routes>	
