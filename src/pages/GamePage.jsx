@@ -7,13 +7,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import COLORS from '../constants/colors.js';
 import {BsFillPeopleFill} from 'react-icons/bs';
 import HashLoaderScreen from '../components/HashLoader.jsx';
+import AuthContext from '../context/authContext.js';
 export default function GamePage(){
 	const {sessionData, setSessionData} = useContext(SessionContext);
+	const {setAuthData} = useContext(AuthContext);
 	const [game, setGame] = useState(null);
 	const {ID} = useParams();
 	const navigate = useNavigate();
 
 	useEffect(()=> {
+		if(localStorage.getItem('session')){
+			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session'));
+			setAuthData({idUser, name, email, address, image, token});
+		}
 		getGame();
 	},[]);
 
@@ -22,9 +28,8 @@ export default function GamePage(){
 			const response = await axios.get(`${process.env.REACT_APP_API_URL}/games/${ID}`);
 			setGame(response.data);
 		}catch(err){
-			console.log(err);
+			alert(err.response.data.message);
 		}
-		console.log(console.log(ID));
 	}
 	
 	function handleCart(id){

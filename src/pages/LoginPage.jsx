@@ -44,12 +44,9 @@ export default function LoginPage(){
 
 				setAuthData(res.data);
 				localStorage.setItem('session', JSON.stringify(res.data));
-				console.log(res.data);
 				navigate('/');
 			})
 			.catch (err => {
-				console.log(err);
-				console.log(body);
 				alert(`Erro: ${err.response.data}`);
 			});
 	}
