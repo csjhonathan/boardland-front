@@ -87,7 +87,7 @@ const SpaceContainer = styled.div`
     gap: 12px;
     input {
     width: 100%;
-    height: 60px;
+    height: 50px;
     padding: 15px;
     background-color: ${COLORS.input};
     border: 0;
@@ -104,7 +104,7 @@ const SpaceContainer = styled.div`
     }  
     button{
       width: 100%;
-      height: 60px;
+      height: 50px;
       padding: 10px;
       background-color: ${COLORS.main};
       border: 0;
@@ -113,6 +113,7 @@ const SpaceContainer = styled.div`
       font-weight: 700;
       font-size: 24px;
       color: ${COLORS.neutral};
+  margin-top: 5px;
     }
   }
 `;
@@ -124,4 +125,5 @@ const LinkLogin = styled(Link)`
   display: flex;
   justify-content: center;
   text-decoration: none;
+  margin-top: 5px;
 `;
