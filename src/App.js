@@ -8,24 +8,28 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignUpPage from './pages/SignUpPage.jsx';
 import SessionContext from './context/sessionContext.js';
 import { useState } from 'react';
+import AuthContext from './context/authContext.js';
 
 export default function App() {
+	const [authData, setAuthData] = useState();
 	const [sessionData, setSessionData] = useState({
 		cart : [], total : 0,
 	});
 	return (
-		<SessionContext.Provider value = {{sessionData, setSessionData}}>
-			<BrowserRouter>
-				<ResetStyle/>
-				<GlobalStyles/>
-				<Header/>
-				<Routes>
-					<Route path='/login' element = {<LoginPage/>}/>
-					<Route path='/signup' element = {<SignUpPage/>}/>
-					<Route path='/' element = {<HomePage/>}/>
-					<Route path='/game/:ID' element = {<GamePage/>}/>
-				</Routes>	
-			</BrowserRouter>
-		</SessionContext.Provider>
+		<AuthContext.Provider value = {{authData, setAuthData}}>
+			<SessionContext.Provider value = {{sessionData, setSessionData}}>
+				<BrowserRouter>
+					<ResetStyle/>
+					<GlobalStyles/>
+					<Header/>
+					<Routes>
+						<Route path='/login' element = {<LoginPage/>}/>
+						<Route path='/signup' element = {<SignUpPage/>}/>
+						<Route path='/' element = {<HomePage/>}/>
+						<Route path='/game/:ID' element = {<GamePage/>}/>
+					</Routes>	
+				</BrowserRouter>
+			</SessionContext.Provider>
+		</AuthContext.Provider>
 	);
 }

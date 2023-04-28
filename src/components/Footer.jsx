@@ -3,10 +3,17 @@ import {FaShoppingCart} from 'react-icons/fa';
 import {BsPersonCircle} from 'react-icons/bs';
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
+import AuthContext from '../context/authContext.js';
+import { useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 export default function Footer({total, cart}){
+
+	const {authData} = useContext(AuthContext);
+
 	return(
 		<FooterContainer>
-			<PersonIcon/>
+			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/>}
 			<Amount>{`Total: R$ ${total.toFixed(2).replace('.', ',')}`}</Amount>
 			<CartContainer>
 				<CartIcon/>
@@ -43,6 +50,11 @@ const PersonIcon = styled(BsPersonCircle)`
   color: ${COLORS.neutral};
   width: 35px;
   height: 35px;
+`;
+const PersonIconImage = styled.img`
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
 `;
 const CartContainer = styled.div`
   position: relative;
