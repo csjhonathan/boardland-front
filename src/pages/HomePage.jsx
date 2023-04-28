@@ -7,12 +7,18 @@ import { useContext } from 'react';
 import SessionContext from '../context/sessionContext.js';
 import HashLoaderScreen from '../components/HashLoader.jsx';
 import COLORS from '../constants/colors.js';
+import AuthContext from '../context/authContext.js';
 export default function HomePage(){
 	const [games, setGames] = useState(null);
 	const {sessionData, setSessionData} = useContext(SessionContext);
-	useEffect(() => {
-		getAllGames();
-	}, []);
+	const {setAuthData} = useContext(AuthContext);
+	useEffect(()=> {
+		if(localStorage.getItem('session')){
+			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session'));
+			setAuthData({idUser, name, email, address, image, token});
+		}
+		getAllGames(); 
+	},[]);
 	async function getAllGames(){
 		try{
 			const response = await axios.get(`${process.env.REACT_APP_API_URL}/games`);

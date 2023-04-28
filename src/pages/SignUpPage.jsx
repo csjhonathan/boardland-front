@@ -34,12 +34,10 @@ export default function SignUpPage(){
 		};
 
 		axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body)
-			.then (res => {
-				console.log(res);
-				navigate('/');
+			.then (() => {
+				navigate('/login');
 			})
 			.catch (err => {
-				console.log(err);
 				alert(`Erro: ${err.response.data.message}`);
 			});
 	}

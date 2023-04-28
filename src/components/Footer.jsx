@@ -16,8 +16,8 @@ export default function Footer({total, cart}){
 			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/>}
 			<Amount>{`Total: R$ ${total.toFixed(2).replace('.', ',')}`}</Amount>
 			<CartContainer>
-				<CartIcon/>
-				<Count>{cart.length}</Count>
+				<CartIcon onClick={()=>alert('Está funcionalidade será implementada em breve!')}/>
+				<Count >{cart.length}</Count>
 			</CartContainer>
 		</FooterContainer>
 	);
@@ -55,6 +55,7 @@ const PersonIconImage = styled.img`
   width: 35px;
   height: 35px;
   border-radius: 50%;
+  object-fit: cover;
 `;
 const CartContainer = styled.div`
   position: relative;
