@@ -7,10 +7,15 @@ import { useState } from 'react';
 export default function SignUpPage(){
 
 	const [form, setForm] = useState({name: '', email: '', address: '', image: '', password: '', passwordrepeat: ''});
+	const [inputText, setInputText] = useState(false);
 	const navigate = useNavigate();
   
 	function handleForm(e) {
-		setForm({...form, [e.target.name]: e.target.value});
+		setForm({...form, [e.target.name]: e.target.value});		
+	}
+
+	function handleFocus(e){
+		setInputText(e.target.name);
 	}
 
 	function signUp(e) {
@@ -47,12 +52,18 @@ export default function SignUpPage(){
 			<SpaceContainer>
 				<h2>Cadastro:</h2>
 				<form onSubmit={signUp}>
-					<input type="name" placeholder="Nome e Sobrenome" name="name" value={form.name} onChange={handleForm} required/>
-					<input type="email" placeholder="E-mail" name="email" value={form.email} onChange={handleForm} required />
-					<input type="text" placeholder="Endereço (Rua, Bairro, Cidade, Estado, CEP)" name="address" value={form.address} onChange={handleForm} required />
-					<input type="text" placeholder="Imagem de Perfil (Link)" name="image" value={form.image} onChange={handleForm} required />
-					<input type="password" placeholder="Senha" name="password" value={form.password} onChange={handleForm} required />
-					<input type="password" placeholder="Confirmar senha" name="passwordrepeat" value={form.passwordrepeat} onChange={handleForm} required />
+					<input onFocus={handleFocus} type="name" placeholder="Nome e Sobrenome" name="name" value={form.name} onChange={handleForm} required/>
+					<InfInput className="name" disabled={inputText === 'name' ? true : false}>Digite seu nome e sobrenome</InfInput>
+					<input onFocus={handleFocus} type="email" placeholder="E-mail" name="email" value={form.email} onChange={handleForm} required />
+					<InfInput className="email" disabled={inputText === 'email' ? true : false}>Digite seu E-mail principal</InfInput>
+					<input onFocus={handleFocus} type="text" placeholder="Endereço (Rua, Bairro, Cidade, Estado, CEP)" name="address" value={form.address} onChange={handleForm} required />
+					<InfInput className="address" disabled={inputText === 'address' ? true : false}>Digite seu endereço completo</InfInput>
+					<input onFocus={handleFocus} type="text" placeholder="Imagem de Perfil (Link)" name="image" value={form.image} onChange={handleForm} required />
+					<InfInput className="image" disabled={inputText === 'image' ? true : false}>Coloque um link da sua foto de perfil</InfInput>
+					<input onFocus={handleFocus} type="password" placeholder="Senha (8 caracteres com pelo número, letras e caracteres especiais" name="password" value={form.password} onChange={handleForm} required />
+					<InfInput className="password" disabled={inputText === 'password' ? true : false}>Mínimo 8 dígitos com pelo menos 1 caractere especial, 1 letra maiúscula, 1 letra minúscula e 1 número</InfInput>
+					<input onFocus={handleFocus} type="password" placeholder="Confirmar senha" name="passwordrepeat" value={form.passwordrepeat} onChange={handleForm} required />
+					<InfInput className="passwordrepeat" disabled={inputText === 'passwordrepeat' ? true : false}>Repita a mesma senha digitada acima</InfInput>
 					<button type='submit'>Cadastrar</button>
 				</form>
 				<LinkLogin to={'/login'}>Já possui cadastro? Faça Login!</LinkLogin>
@@ -99,7 +110,7 @@ const SpaceContainer = styled.div`
       &:focus {
           outline: none;
       }
-    }  
+    }
     button{
       width: 100%;
       height: 50px;
@@ -111,7 +122,7 @@ const SpaceContainer = styled.div`
       font-weight: 700;
       font-size: 24px;
       color: ${COLORS.neutral};
-  margin-top: 5px;
+      margin-top: 5px;
     }
   }
 `;
@@ -124,4 +135,27 @@ const LinkLogin = styled(Link)`
   justify-content: center;
   text-decoration: none;
   margin-top: 5px;
+`;
+const InfInput = styled.div`
+  font-size: 12px;
+  margin-top: -5px;
+  line-height: 15px;
+  &.name {
+    display: ${props => (props.disabled === false) ? 'none' : 'flex'};
+  }
+  &.email {
+    display: ${props => (props.disabled === false) ? 'none' : 'flex'};
+  }
+  &.address {
+    display: ${props => (props.disabled === false) ? 'none' : 'flex'};
+  }
+  &.image {
+    display: ${props => (props.disabled === false) ? 'none' : 'flex'};
+  }
+  &.password {
+    display: ${props => (props.disabled === false) ? 'none' : 'flex'};
+  }
+  &.passwordrepeat {
+    display: ${props => (props.disabled === false) ? 'none' : 'flex'};
+  }
 `;

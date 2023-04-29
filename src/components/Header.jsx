@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import {GiPerspectiveDiceSixFacesSix} from 'react-icons/gi';
+import { Link } from 'react-router-dom';
 export default function Header(){
-	return(
-		<HeaderContainer>
-			B<GiPerspectiveDiceSixFacesSix/>ardLand
-		</HeaderContainer>
+	return(		
+		<Link to={'/'}><HeaderContainer>B<GiPerspectiveDiceSixFacesSix/>ardLand</HeaderContainer></Link>
 	);
 }
 
@@ -28,4 +27,7 @@ const HeaderContainer = styled.div`
   line-height: 40px;
   text-align: center;
   color: ${COLORS.neutral};
+  Link {
+    
+  }
 `;

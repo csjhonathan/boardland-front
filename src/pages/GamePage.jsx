@@ -102,20 +102,21 @@ const GameContainer = styled.div`
   position: relative;
   background-color: ${COLORS.main};
   width: 350px;
-	height: 420px;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
   padding: 15px;
+  gap:10px;
 `;
 
 const GameImage = styled.img`
-  width: 100%;
+  width: 320px;
 	height: 150px;
   border-radius: 5px;
-	object-fit: contain;
+	object-fit: cover;
+	margin-bottom: 10px;
 `;
 const GameTitle = styled.p`
 	display: flex;
@@ -152,7 +153,6 @@ const GameButton = styled.button`
   transition: all .5s;
 `;
 const GameDescription = styled.div`
-	height: 150px;
 	width: 100%;
 	overflow: scroll;
 	font-family: 'Farro';
@@ -161,6 +161,7 @@ const GameDescription = styled.div`
 	font-size: 12px;
 	line-height: 12px;
 	color:${COLORS.neutral};
+	margin-bottom: 10px;
 `;
 const BackToHome = styled.button`
 	border: none;
@@ -174,7 +175,7 @@ const BackToHome = styled.button`
 	line-height: 12px;
 	text-align: center;
 	color: ${COLORS.main};
-	margin-top: 30px;
+	margin-top: 20px;
 `;
 
 const Players = styled.div`
