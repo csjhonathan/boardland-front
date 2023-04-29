@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
@@ -13,6 +13,12 @@ export default function LoginPage(){
 	const {setAuthData} = useContext(AuthContext);
 	const navigate = useNavigate();
   
+	useEffect(() => {
+		if (localStorage.getItem('session')) {
+			return navigate('/');
+		}
+	},[]);
+
 	function handleCheck() {
 		setCheck(!check);
 	}
