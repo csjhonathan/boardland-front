@@ -9,14 +9,19 @@ import { Link } from 'react-router-dom';
 
 export default function Footer({total, cart}){
 
-	const {authData} = useContext(AuthContext);
+	const {authData,setAuthData} = useContext(AuthContext);
+
+	function handleLogout(){
+		localStorage.removeItem('session');
+		setAuthData();
+	}
 
 	return(
 		<FooterContainer>
-			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/>}
+			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <Link to={'/logout'} onClick={handleLogout}><PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/></Link>}
 			<Amount>{`Total: R$ ${total.toFixed(2).replace('.', ',')}`}</Amount>
 			<CartContainer>
-				<CartIcon onClick={()=>alert('Está funcionalidade será implementada em breve!')}/>
+				<CartIcon onClick={()=>alert('Esta funcionalidade será implementada em breve!')}/>
 				<Count >{cart.length}</Count>
 			</CartContainer>
 		</FooterContainer>

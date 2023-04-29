@@ -65,6 +65,6 @@ const Container = styled.div`
   display: grid;
   justify-items: center;
   justify-content: center;
-  grid-template-columns: 0.45fr 0.2fr 0.45fr;
-  grid-row-gap: 25px;
+  grid-template-columns: 0.45fr 0.4fr;
+  grid-row-gap: 20px;
 `;
