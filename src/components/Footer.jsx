@@ -5,15 +5,28 @@ import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import AuthContext from '../context/authContext.js';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Footer({total, cart}){
 
 	const {authData,setAuthData} = useContext(AuthContext);
+	const navigate = useNavigate();
 
 	function handleLogout(){
-		localStorage.removeItem('session');
-		setAuthData();
+
+		const config = { headers: { Authorization: `Bearer ${authData.token}`}};
+		console.log(config);
+
+		axios.post(`${process.env.REACT_APP_API_URL}/logout`, {}, config)
+			.then(() => {
+				localStorage.removeItem('session');
+				setAuthData();
+				navigate('/logout');
+			})
+			.catch(err => {
+				alert(err.response.data);
+			});
 	}
 
 	return(
