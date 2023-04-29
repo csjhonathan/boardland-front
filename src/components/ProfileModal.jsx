@@ -5,12 +5,21 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/authContext.js';
 import COLORS from '../constants/colors.js';
+import api from '../services/api.js';
 export default function ProfileModal({openModal, setOpenModal, anchorEl}){
 	const {authData, setAuthData} = useContext(AuthContext);
 	const navigate = useNavigate();
-	function logout(){
-		localStorage.removeItem('session');
-		setAuthData();
+	function handleLogout(){
+		api.post('/logout')
+			.then(() => {
+				localStorage.removeItem('session');
+				sessionStorage.removeItem('session');
+				setAuthData();
+				navigate('/logout');
+			})
+			.catch(err => {
+				alert(err.response.data);
+			});
 	}
 	if(!authData){
 		return(
@@ -49,7 +58,7 @@ export default function ProfileModal({openModal, setOpenModal, anchorEl}){
 					<ProfileData>
 						<ProfileName>{authData.name}</ProfileName>
 					</ProfileData>
-					<LogoutButton onClick={logout}>Sair!</LogoutButton>
+					<LogoutButton onClick={handleLogout}>Sair!</LogoutButton>
 				</Options>
 			</StyledBox>
 		</Modal>
