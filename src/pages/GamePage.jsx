@@ -17,8 +17,8 @@ export default function GamePage(){
 	const navigate = useNavigate();
 
 	useEffect(()=> {
-		if(localStorage.getItem('session')){
-			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session'));
+		if(localStorage.getItem('session') || sessionStorage.getItem('session')){
+			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
 			setAuthData({idUser, name, email, address, image, token});
 		}
 		getGame();

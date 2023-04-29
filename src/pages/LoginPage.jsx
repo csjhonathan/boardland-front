@@ -43,8 +43,8 @@ export default function LoginPage(){
 		api.post('/login', body)
 			.then (res => {
 				if (check === false) {
-					const {idUser, name, email, address, image} = res.data;
-					setAuthData({idUser, name, email, address, image});
+					setAuthData(res.data);
+					sessionStorage.setItem('session', JSON.stringify(res.data));
 					return navigate('/');
 				}
 
