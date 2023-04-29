@@ -4,26 +4,28 @@ import {BsPersonCircle} from 'react-icons/bs';
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import AuthContext from '../context/authContext.js';
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import ProfileModal from './ProfileModal.jsx';
 
 export default function Footer({total, cart}){
+	const [openModal, setOpenModal] = useState(false);
+	const {authData} = useContext(AuthContext);
+	const [anchorEl, setAnchorEl] = useState(null);
 
-	const {authData,setAuthData} = useContext(AuthContext);
-
-	function handleLogout(){
-		localStorage.removeItem('session');
-		setAuthData();
+	function openOptions(e){
+		setOpenModal(true);
+		setAnchorEl(e.currentTarget);
 	}
 
 	return(
 		<FooterContainer>
-			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <Link to={'/logout'} onClick={handleLogout}><PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/></Link>}
+			{!authData ? <PersonIcon onClick={openOptions}/>: <PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`} onClick={openOptions}/>}
 			<Amount>{`Total: R$ ${total.toFixed(2).replace('.', ',')}`}</Amount>
 			<CartContainer>
 				<CartIcon onClick={()=>alert('Esta funcionalidade será implementada em breve!')}/>
 				<Count >{cart.length}</Count>
 			</CartContainer>
+			<ProfileModal openModal = {openModal} setOpenModal ={setOpenModal} anchorEl ={anchorEl}/>
 		</FooterContainer>
 	);
 }

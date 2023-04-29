@@ -5,7 +5,10 @@ const COLORS = {
 	selected : '#FF9B06',
 	placeholder : '#C6C6C6',
 	placeholderback : '#252525',
-	input : '#EBEBEB'
+	input : '#EBEBEB',
+	login : '#71C684',
+	logout : '#E66168',
+	profile : 'FF9B06'
 };
 
 export default COLORS;
