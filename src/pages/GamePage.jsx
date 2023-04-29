@@ -2,12 +2,13 @@ import styled from 'styled-components';
 import Footer from '../components/Footer.jsx';
 import { useContext, useEffect, useState } from 'react';
 import SessionContext from '../context/sessionContext.js';
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import COLORS from '../constants/colors.js';
 import {BsFillPeopleFill} from 'react-icons/bs';
 import HashLoaderScreen from '../components/HashLoader.jsx';
 import AuthContext from '../context/authContext.js';
+import api from '../services/api.js';
+
 export default function GamePage(){
 	const {sessionData, setSessionData} = useContext(SessionContext);
 	const {setAuthData} = useContext(AuthContext);
@@ -25,7 +26,7 @@ export default function GamePage(){
 
 	async function getGame(){
 		try{
-			const response = await axios.get(`${process.env.REACT_APP_API_URL}/games/${ID}`);
+			const response = await api.get(`/games/${ID}`);
 			setGame(response.data);
 		}catch(err){
 			alert(err.response.data.message);

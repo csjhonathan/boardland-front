@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import AuthContext from '../context/authContext.js';
+import api from '../services/api.js';
 
 export default function LoginPage(){
 
@@ -34,7 +34,7 @@ export default function LoginPage(){
 			password: form.password
 		};
 
-		axios.post(`${process.env.REACT_APP_API_URL}/login`, body)
+		api.post('/login', body)
 			.then (res => {
 				if (check === false) {
 					const {idUser, name, email, address, image} = res.data;

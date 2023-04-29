@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useState } from 'react';
+import api from '../services/api.js';
 
 export default function SignUpPage(){
 
@@ -38,7 +38,7 @@ export default function SignUpPage(){
 			password: form.password
 		};
 
-		axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, body)
+		api.post('/sign-up', body)
 			.then (() => {
 				navigate('/login');
 			})
