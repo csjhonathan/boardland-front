@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import GameCard from '../components/GameCard.jsx';
 import styled from 'styled-components';
@@ -8,10 +7,13 @@ import SessionContext from '../context/sessionContext.js';
 import HashLoaderScreen from '../components/HashLoader.jsx';
 import COLORS from '../constants/colors.js';
 import AuthContext from '../context/authContext.js';
+import api from '../services/api.js';
+
 export default function HomePage(){
 	const [games, setGames] = useState(null);
 	const {sessionData, setSessionData} = useContext(SessionContext);
 	const {setAuthData} = useContext(AuthContext);
+
 	useEffect(()=> {
 		if(localStorage.getItem('session')){
 			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session'));
@@ -19,9 +21,10 @@ export default function HomePage(){
 		}
 		getAllGames(); 
 	},[]);
+
 	async function getAllGames(){
 		try{
-			const response = await axios.get(`${process.env.REACT_APP_API_URL}/games`);
+			const response = await api.get('/games');
 			const gamesList = response.data;
 			setGames(gamesList);
 		}catch(err){

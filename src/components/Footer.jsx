@@ -6,6 +6,8 @@ import COLORS from '../constants/colors.js';
 import AuthContext from '../context/authContext.js';
 import { useContext, useState } from 'react';
 import ProfileModal from './ProfileModal.jsx';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api.js';
 
 export default function Footer({total, cart}){
 	const [openModal, setOpenModal] = useState(false);
