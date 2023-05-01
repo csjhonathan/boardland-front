@@ -102,6 +102,7 @@ export default function CartPage() {
 		};
 
 		setPurchaseData(newCart);
+		navigate('/check-order');
 	}
 
 	useEffect(() => {
@@ -160,7 +161,7 @@ export default function CartPage() {
 					</TotalContainer>
 
 					<Button onClick={handleSaveData}>Ir Para a Finalização</Button>
-					<Link to="/check-order">Continuar comprando</Link>
+					<Link to="/">Continuar comprando</Link>
 				</>
 			)}
 			

@@ -1,30 +1,35 @@
-/*eslint-disable react/prop-types*/
+/*eslint-disable react/react-in-jsx-scope*/
 import {FaShoppingCart} from 'react-icons/fa';
 import {BsPersonCircle} from 'react-icons/bs';
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import AuthContext from '../context/authContext.js';
-import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ProfileModal from './ProfileModal.jsx';
 
 export default function Footer({total, cart}){
-	const {authData,setAuthData} = useContext(AuthContext);
+	const [openModal, setOpenModal] = useState(false);
+	const [anchorEl, setAnchorEl] = useState(null);
+
+	const {authData} = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
-	function handleLogout(){
-		localStorage.removeItem('session');
-		setAuthData();
+	function openOptions(e){
+		setOpenModal(true);
+		setAnchorEl(e.currentTarget);
 	}
 
 	return(
 		<FooterContainer>
-			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <Link to={'/logout'} onClick={handleLogout}><PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/></Link>}
+			{!authData ? <PersonIcon onClick={openOptions}/>: <PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`} onClick={openOptions}/>}
 			<Amount>{`Total: R$ ${total.toFixed(2).replace('.', ',')}`}</Amount>
 			<CartContainer onClick={()=> navigate('/cart')}>
 				<CartIcon />
 				<Count>{cart.length}</Count>
 			</CartContainer>
+			<ProfileModal openModal = {openModal} setOpenModal ={setOpenModal} anchorEl ={anchorEl}/>
 		</FooterContainer>
 	);
 }

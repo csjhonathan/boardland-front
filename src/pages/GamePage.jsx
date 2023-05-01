@@ -20,12 +20,10 @@ export default function GamePage() {
 	const { ID } = useParams();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		const session = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
-
-		if (session) {
-			const { idUser, name, email, address, image, token } = session;
-			setAuthData({ idUser, name, email, address, image, token });
+	useEffect(()=> {
+		if(localStorage.getItem('session') || sessionStorage.getItem('session')){
+			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
+			setAuthData({idUser, name, email, address, image, token});
 		}
 		getGame();
 	}, []);
