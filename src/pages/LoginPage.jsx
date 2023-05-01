@@ -7,7 +7,6 @@ import AuthContext from '../context/authContext.js';
 import api from '../services/api.js';
 
 export default function LoginPage(){
-
 	const [form, setForm] = useState({email: '', password: '', check: false});
 	const [check, setCheck] = useState(false);
 	const {setAuthData} = useContext(AuthContext);

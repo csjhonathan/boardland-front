@@ -39,48 +39,43 @@ export default function GamePage() {
 		}
 	}
 
-	async function handleCart(id) {
-		const gameOnCart = sessionData.cart.find((game) => game.id === id);
+	async function handleCart(id){
+		const gameOnCart = sessionData.cart.find(game => game.id === id);
+		const session = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
+
+		let updatedCart;
 
 		try {
 			setIsLoading(true);
-
+			
 			if (gameOnCart) {
-				const updatedCart = sessionData.cart.filter((game) => game.id !== id);
-				const total = updatedCart.reduce((acc, { price }) => (acc += price), 0);
-				const item = { ...sessionData, cart: updatedCart, total };
+				updatedCart = sessionData.cart.filter(game => game.id !== id);
+			} else {
+				const addGame = {
+					id: game._id,
+					name: game.name,
+					image: game.image,
+					price: game.price,
+				};
+			
+				updatedCart = [...sessionData.cart, addGame];
+			}
+			
+			const total = updatedCart.reduce((acc, {price}) => acc += price, 0);
+			const item = { ...sessionData, cart: updatedCart, total };
 
+			if (session) {
 				delete item.idUser;
 				delete item._id;
-			
-				await api.post('/cart', item);
-
-				localStorage.setItem('cart', JSON.stringify(item));
-				setSessionData(item);
-				return;
-			}
-
-			const addGame = {
-				id: game._id,
-				name: game.name,
-				image: game.image,
-				price: game.price,
-			};
-
-			const updatedCart = [...sessionData.cart, addGame];
-			const total = updatedCart.reduce((acc, { price }) => (acc += price), 0);
-			const item = { ...sessionData, cart: updatedCart, total };
 		
-			delete item.idUser;
-			delete item._id;
-			
-			await api.post('/cart', item);
+				await api.post('/cart', item);
+			}
 
 			localStorage.setItem('cart', JSON.stringify(item));
 			setSessionData(item);
 		} catch (error) {
 			alert(error.message);
-		}  finally {
+		} finally {
 			setIsLoading(false);
 		}
 	}

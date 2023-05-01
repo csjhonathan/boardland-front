@@ -5,11 +5,12 @@ import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import AuthContext from '../context/authContext.js';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Footer({total, cart}){
-
 	const {authData,setAuthData} = useContext(AuthContext);
+
+	const navigate = useNavigate();
 
 	function handleLogout(){
 		localStorage.removeItem('session');
@@ -20,9 +21,9 @@ export default function Footer({total, cart}){
 		<FooterContainer>
 			{!authData ? <Link to={'/login'}><PersonIcon/></Link> : <Link to={'/logout'} onClick={handleLogout}><PersonIconImage src={authData.image} alt={`Imagem de perfil de ${authData.name}`}/></Link>}
 			<Amount>{`Total: R$ ${total.toFixed(2).replace('.', ',')}`}</Amount>
-			<CartContainer>
-				<CartIcon onClick={()=>alert('Esta funcionalidade será implementada em breve!')}/>
-				<Count >{cart.length}</Count>
+			<CartContainer onClick={()=> navigate('/cart')}>
+				<CartIcon />
+				<Count>{cart.length}</Count>
 			</CartContainer>
 		</FooterContainer>
 	);
