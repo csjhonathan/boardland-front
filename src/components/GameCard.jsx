@@ -13,40 +13,35 @@ export default function GameCard({id, name, image, price, sessionData, setSessio
 
 	async function handleCart(id){
 		const gameOnCart = sessionData.cart.find(game => game.id === id);
+		const session = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
+
+		let updatedCart;
 
 		try {
 			setIsLoading(true);
 			
-			if(gameOnCart) {
-				const updatedCart = sessionData.cart.filter(game => game.id !== id);
-				const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-				const item = { ...sessionData, cart: updatedCart, total };
-
-				delete item.idUser;
-				delete item._id;
-			
-				await api.post('/cart', item);
-	
-				localStorage.setItem('cart', JSON.stringify(item));
-				setSessionData(item);
-				return;
+			if (gameOnCart) {
+				updatedCart = sessionData.cart.filter(game => game.id !== id);
+			} else {
+				const game = {
+					id,
+					name,
+					image,
+					price,
+				};
+				
+				updatedCart = [...sessionData.cart, game];
 			}
-	
-			const game = {
-				id,
-				name,
-				image,
-				price,
-			};
-	
-			const updatedCart = [...sessionData.cart, game];
-			const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
+			
+			const total = updatedCart.reduce((acc, {price}) => acc += price, 0);
 			const item = { ...sessionData, cart: updatedCart, total };
 
-			delete item.idUser;
-			delete item._id;
-			
-			await api.post('/cart', item);
+			if (session) {
+				delete item.idUser;
+				delete item._id;
+		
+				await api.post('/cart', item);
+			}
 
 			localStorage.setItem('cart', JSON.stringify(item));
 			setSessionData(item);
@@ -56,6 +51,7 @@ export default function GameCard({id, name, image, price, sessionData, setSessio
 			setIsLoading(false);
 		}
 	}
+	
 	return(
 		<CardContainer >
 			<CardImage src={image} alt = {`imagem referente ao jogo ${name}`}/>
