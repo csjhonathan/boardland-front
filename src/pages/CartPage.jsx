@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // import { useState, useEffet } from 'react';
 import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -24,6 +25,35 @@ export default function CartPage() {
 	const { setPurchaseData } = useContext(PurchaseContext);
 
 	const navigate = useNavigate();
+
+	function handleChangeNumber(e) {
+		const { value } = e.target;
+
+		const formattedValue = value
+			.replace(/\D/g, '') 
+			.replace(/(.{4})/g, '$1 ')
+			.trim();
+
+		setNumber(formattedValue);
+	}
+
+	function handleChangeCVV(e) {
+		const { value } = e.target;
+
+		const formattedValue = value.replace(/\D/g, '');
+
+		setCvv(formattedValue);
+	}
+
+	function handleChangeValidate(e) {
+		let value = e.target.value.replace(/\D/g, '');
+
+		if (value.length > 2) {
+			value = value.substring(0, 2) + '/' + value.substring(2);
+		}
+	
+		setValidate(value);
+	}
 
 	async function handleLoadCart() {
 		setIsLoading(true);
@@ -77,32 +107,64 @@ export default function CartPage() {
 
 	}
 
+	function isValidData() {
+		const regextNumber = /^[0-9]{16}$/;
+		const regexCvv = /^[0-9]{3}$/;
+		const regexValidate = /^(0[1-9]|1[0-2])\/[0-9]{2}$/;
+
+		const isNumberValid = regextNumber.test(number.replace(/\s/g, ''));
+		const isCVVValid = regexCvv.test(cvv);
+		const isValidateValid = regexValidate.test(validate);
+
+		if (!isNumberValid) {
+			alert('O número do cartão deve ser composto por 16 números');
+		}
+
+		if (!isCVVValid) {
+			alert('O CVV deve ser composto por 3 números');
+		}
+
+		if (!isValidateValid) {
+			alert('Formato de data inválido');
+		}
+
+		if (isNumberValid && isCVVValid && isValidateValid) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	function handleSaveData() {
 		if (number.trim().length === 0 || name.trim().length === 0 || cvv.trim().length === 0 || validate.trim().length === 0) {
 			alert('Preencha todos os campos!');
 			return;
 		}
 
-		const games = sessionData.cart.map(item => { 
-			const newGame = {
-				id: item.id, name: item.name
+		const isValid = isValidData();
+
+		if (isValid) {
+			const games = sessionData.cart.map(item => { 
+				const newGame = {
+					id: item.id, name: item.name, price: item.price,
+				};
+				return newGame;
+			});
+	
+			const newCart = {
+				games,
+				total: sessionData.total,
+				creditCard: {
+					number: number.replace(/\s/g, ''),
+					name,
+					cvv,
+					validate,
+				}
 			};
-			return newGame;
-		});
-
-		const newCart = {
-			games,
-			total: sessionData.total,
-			creditCard: {
-				number,
-				name,
-				cvv,
-				validate,
-			}
-		};
-
-		setPurchaseData(newCart);
-		navigate('/check-order');
+	
+			setPurchaseData(newCart);
+			navigate('/check-order');
+		}
 	}
 
 	useEffect(() => {
@@ -143,7 +205,13 @@ export default function CartPage() {
 
 					<CreditCardContainer>
 						<CreditCardLine>
-							<CreditCardItem width='100%' placeholder="Número do cartão" value={number} onChange={(e) => setNumber(e.target.value)}/>
+							<CreditCardItem 
+								width='100%'
+								placeholder="Número do cartão"
+								value={number}
+								onChange={handleChangeNumber}
+								maxLength={19}
+							/>
 						</CreditCardLine>
 
 						<CreditCardLine>
@@ -151,8 +219,22 @@ export default function CartPage() {
 						</CreditCardLine>
 
 						<CreditCardLine>
-							<CreditCardItem width='50%' placeholder="CVV" alignCenter value={cvv} onChange={(e) => setCvv(e.target.value)}/>
-							<CreditCardItem width='50%' placeholder="Validade (MM/YY)" alignCenter value={validate} onChange={(e) => setValidate(e.target.value)}/>
+							<CreditCardItem
+								width='50%'
+								placeholder="CVV"
+								value={cvv}
+								onChange={handleChangeCVV}
+								alignCenter
+								maxLength={3}
+							/>
+							<CreditCardItem
+								width='50%'
+								placeholder="Validade (MM/YY)"
+								alignCenter
+								value={validate}
+								onChange={handleChangeValidate}
+								maxLength={5}
+							/>
 						</CreditCardLine>
 					</CreditCardContainer>
 

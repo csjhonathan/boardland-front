@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import SignUpPage from './pages/SignUpPage.jsx';
 import LogoutPage from './pages/LogoutPage.jsx';
 import CartPage from './pages/CartPage.jsx';
+import ConfirmPage from './pages/ConfirmPage.jsx';
 import SessionContext from './context/sessionContext.js';
 import { useState, useEffect } from 'react';
 import AuthContext from './context/authContext.js';
@@ -58,6 +59,7 @@ export default function App() {
 							<Route path='/' element={<HomePage />} />
 							<Route path='/game/:ID' element={<GamePage />} />
 							<Route path='/cart' element={<CartPage />} />
+							<Route path='/check-order' element={<ConfirmPage />} />
 						</Routes>
 					</BrowserRouter>
 				</PurchaseContext.Provider>

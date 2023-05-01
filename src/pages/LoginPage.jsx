@@ -4,12 +4,16 @@ import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/authContext.js';
+import PurchaseContext from '../context/purchaseContext.js';
 import api from '../services/api.js';
 
 export default function LoginPage(){
 	const [form, setForm] = useState({email: '', password: '', check: false});
 	const [check, setCheck] = useState(false);
+
 	const {setAuthData} = useContext(AuthContext);
+	const { purchaseData } = useContext(PurchaseContext);
+
 	const navigate = useNavigate();
   
 	useEffect(() => {
@@ -44,11 +48,13 @@ export default function LoginPage(){
 				if (check === false) {
 					setAuthData(res.data);
 					sessionStorage.setItem('session', JSON.stringify(res.data));
+					if(purchaseData) return navigate('/check-order');
 					return navigate('/');
 				}
 
 				setAuthData(res.data);
 				localStorage.setItem('session', JSON.stringify(res.data));
+				if(purchaseData) return navigate('/check-order');
 				navigate('/');
 			})
 			.catch (err => {
