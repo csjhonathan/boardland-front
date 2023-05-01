@@ -2,27 +2,59 @@
 import styled from 'styled-components';
 import COLORS from '../constants/colors.js';
 import { useNavigate } from 'react-router-dom';
+import { ThreeDots } from 'react-loader-spinner';
+import { useState } from 'react';
+import api from '../services/api.js';
+
 export default function GameCard({id, name, image, price, sessionData, setSessionData, onCart}){
+	const [isLoading, setIsLoading] = useState(false);
+
 	const navigate = useNavigate();
-	function handleCart(id){
 
+	async function handleCart(id){
 		const gameOnCart = sessionData.cart.find(game => game.id === id);
-		if(gameOnCart){
-			const updatedCart = sessionData.cart.filter(game => game.id!==id);
-			const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-			setSessionData({...sessionData, cart : updatedCart ,total});
-			return;
-		}
-		const game = {
-			id,
-			name,
-			image,
-			price,
-		};
 
-		const updatedCart = [...sessionData.cart, game];
-		const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-		setSessionData({...sessionData, cart : updatedCart ,total});
+		try {
+			setIsLoading(true);
+			
+			if(gameOnCart) {
+				const updatedCart = sessionData.cart.filter(game => game.id !== id);
+				const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
+				const item = { ...sessionData, cart: updatedCart, total };
+
+				delete item.idUser;
+				delete item._id;
+			
+				await api.post('/cart', item);
+	
+				localStorage.setItem('cart', JSON.stringify(item));
+				setSessionData(item);
+				return;
+			}
+	
+			const game = {
+				id,
+				name,
+				image,
+				price,
+			};
+	
+			const updatedCart = [...sessionData.cart, game];
+			const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
+			const item = { ...sessionData, cart: updatedCart, total };
+
+			delete item.idUser;
+			delete item._id;
+			
+			await api.post('/cart', item);
+
+			localStorage.setItem('cart', JSON.stringify(item));
+			setSessionData(item);
+		} catch (error) {
+			alert(error.message);
+		} finally {
+			setIsLoading(false);
+		}
 	}
 	return(
 		<CardContainer >
@@ -34,7 +66,16 @@ export default function GameCard({id, name, image, price, sessionData, setSessio
 				{`R$ ${price.toFixed(2).replace('.',',')}`}
 			</CardPrice>
 			<CardButton onCart = {onCart} onClick={()=> handleCart(id)}>
-				{onCart ? 'No Carrinho' : 'Coloca no carrinho'}
+				{isLoading ? <ThreeDots
+					height="8px"
+					radius="9"
+					color="#FFF"
+					ariaLabel="three-dots-loading"
+					visible={true}
+				/> : (
+					onCart ? 'No Carrinho' : 'Coloca no carrinho'
+				)}
+				
 			</CardButton>
 			<Details onClick={() => navigate(`/game/${id}`)}>Ver detalhes</Details>
 		</CardContainer>

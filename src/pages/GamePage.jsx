@@ -4,16 +4,20 @@ import { useContext, useEffect, useState } from 'react';
 import SessionContext from '../context/sessionContext.js';
 import { useNavigate, useParams } from 'react-router-dom';
 import COLORS from '../constants/colors.js';
-import {BsFillPeopleFill} from 'react-icons/bs';
+import { BsFillPeopleFill } from 'react-icons/bs';
 import HashLoaderScreen from '../components/HashLoader.jsx';
 import AuthContext from '../context/authContext.js';
 import api from '../services/api.js';
+import { ThreeDots } from 'react-loader-spinner';
 
-export default function GamePage(){
-	const {sessionData, setSessionData} = useContext(SessionContext);
-	const {setAuthData} = useContext(AuthContext);
+export default function GamePage() {
+	const [isLoading, setIsLoading] = useState(false);
 	const [game, setGame] = useState(null);
-	const {ID} = useParams();
+
+	const { sessionData, setSessionData } = useContext(SessionContext);
+	const { setAuthData } = useContext(AuthContext);
+
+	const { ID } = useParams();
 	const navigate = useNavigate();
 
 	useEffect(()=> {
@@ -22,71 +26,107 @@ export default function GamePage(){
 			setAuthData({idUser, name, email, address, image, token});
 		}
 		getGame();
-	},[]);
+	}, []);
 
-	async function getGame(){
-		try{
+	async function getGame() {
+		try {
 			const response = await api.get(`/games/${ID}`);
 			setGame(response.data);
-		}catch(err){
+		} catch (err) {
 			alert(err.response.data.message);
 		}
 	}
-	
-	function handleCart(id){
 
-		const gameOnCart = sessionData.cart.find(game => game.id === id);
-		if(gameOnCart){
-			const updatedCart = sessionData.cart.filter(game => game.id!==id);
-			const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-			setSessionData({...sessionData, cart : updatedCart ,total});
-			return;
+	async function handleCart(id) {
+		const gameOnCart = sessionData.cart.find((game) => game.id === id);
+
+		try {
+			setIsLoading(true);
+
+			if (gameOnCart) {
+				const updatedCart = sessionData.cart.filter((game) => game.id !== id);
+				const total = updatedCart.reduce((acc, { price }) => (acc += price), 0);
+				const item = { ...sessionData, cart: updatedCart, total };
+
+				delete item.idUser;
+				delete item._id;
+			
+				await api.post('/cart', item);
+
+				localStorage.setItem('cart', JSON.stringify(item));
+				setSessionData(item);
+				return;
+			}
+
+			const addGame = {
+				id: game._id,
+				name: game.name,
+				image: game.image,
+				price: game.price,
+			};
+
+			const updatedCart = [...sessionData.cart, addGame];
+			const total = updatedCart.reduce((acc, { price }) => (acc += price), 0);
+			const item = { ...sessionData, cart: updatedCart, total };
+		
+			delete item.idUser;
+			delete item._id;
+			
+			await api.post('/cart', item);
+
+			localStorage.setItem('cart', JSON.stringify(item));
+			setSessionData(item);
+		} catch (error) {
+			alert(error.message);
+		}  finally {
+			setIsLoading(false);
 		}
-		const addGame = {
-			id : game._id,
-			name : game.name,
-			image : game.image,
-			price : game.price,
-		};
-
-		const updatedCart = [...sessionData.cart, addGame];
-		const total = updatedCart.reduce((acc, {price}) => acc+=price, 0);
-		setSessionData({...sessionData, cart : updatedCart ,total});
 	}
 
-	if(!game) return <HashLoaderScreen color={COLORS.secondary}/>;
-	
-	return(
+	if (!game) return <HashLoaderScreen color={COLORS.secondary} />;
+
+	return (
 		<>
 			<Container>
 				<GameContainer>
 					<ImageContainer>
-						<GameImage src={game.image} alt = {`imagem referente ao jogo ${game.name}`}/>
-						<Players> <PlayersIcon/> {`${game.min}-${game.max}`}</Players>
+						<GameImage
+							src={game.image}
+							alt={`imagem referente ao jogo ${game.name}`}
+						/>
+						<Players>
+							{' '}
+							<PlayersIcon /> {`${game.min}-${game.max}`}
+						</Players>
 					</ImageContainer>
 					<GameTitle>
 						{game.name}
 						<GamePrice>
-							{`R$ ${game.price.toFixed(2).replace('.',',')}`}
+							{`R$ ${game.price.toFixed(2).replace('.', ',')}`}
 						</GamePrice>
 					</GameTitle>
-					<GameDescription>
-						{game.description}
-					</GameDescription>
-					<GameButton onCart = {sessionData.cart.some(g => g.id === game._id)} onClick={()=> handleCart(game._id)}>
-						{sessionData.cart.some(({id}) => ID===id) ? 'No Carrinho' : 'Adicionar ao carrinho'}
+					<GameDescription>{game.description}</GameDescription>
+					<GameButton
+						onCart={sessionData.cart.some((g) => g.id === game._id)}
+						onClick={() => handleCart(game._id)}
+					>
+						{isLoading ? <ThreeDots
+							height="12px"
+							radius="9"
+							color="#FFF"
+							ariaLabel="three-dots-loading"
+							visible={true}
+						/> : ( sessionData.cart.some(({ id }) => ID === id)
+							? 'No Carrinho'
+							: 'Adicionar ao carrinho')}
 					</GameButton>
 				</GameContainer>
 
 				<BackToHome onClick={() => navigate('/')}>
-					Voltar para a página inicial
+          Voltar para a página inicial
 				</BackToHome>
 			</Container>
-			<Footer 
-				total = {sessionData.total}
-				cart = {sessionData.cart}
-			/>
-    
+			<Footer total={sessionData.total} cart={sessionData.cart} />
 		</>
 	);
 }
@@ -94,9 +134,9 @@ export default function GamePage(){
 const Container = styled.div`
   padding-top: 115px;
   padding-bottom: 70px;
-	display: flex;
-	align-items: center;
-	flex-direction : column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
 
 const GameContainer = styled.div`
@@ -109,26 +149,26 @@ const GameContainer = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 15px;
-  gap:10px;
+  gap: 10px;
 `;
 
 const GameImage = styled.img`
   width: 320px;
-	height: 150px;
+  height: 150px;
   border-radius: 5px;
-	object-fit: cover;
-	margin-bottom: 10px;
+  object-fit: cover;
+  margin-bottom: 10px;
 `;
 const GameTitle = styled.p`
-	display: flex;
-	justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
   align-self: flex-start;
   font-style: normal;
   font-weight: 700;
-	font-size: 28px;
-	line-height: 28px;
+  font-size: 28px;
+  line-height: 28px;
   color: ${COLORS.neutral};
-	width: 100%;
+  width: 100%;
 `;
 const GamePrice = styled.p`
   align-self: flex-start;
@@ -141,7 +181,7 @@ const GamePrice = styled.p`
 const GameButton = styled.button`
   width: 100%;
   height: 40px;
-  background: ${({onCart}) => onCart ? COLORS.selected : COLORS.secondary};
+  background: ${({ onCart }) => (onCart ? COLORS.selected : COLORS.secondary)};
   border-radius: 5px;
   border: none;
   display: flex;
@@ -151,58 +191,58 @@ const GameButton = styled.button`
   font-weight: 700;
   font-size: 20px;
   color: ${COLORS.neutral};
-  transition: all .5s;
+  transition: all 0.5s;
 `;
 const GameDescription = styled.div`
-	width: 100%;
-	overflow: scroll;
-	font-family: 'Farro';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 12px;
-	line-height: 12px;
-	color:${COLORS.neutral};
-	margin-bottom: 10px;
+  width: 100%;
+  overflow: scroll;
+  font-family: "Farro";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 12px;
+  color: ${COLORS.neutral};
+  margin-bottom: 10px;
 `;
 const BackToHome = styled.button`
-	border: none;
-	background-color: transparent;
-	width: 280px;
-	height: 24px;
-	font-family: 'Farro';
-	font-style: normal;
-	font-weight: 700;
-	font-size: 17px;
-	line-height: 12px;
-	text-align: center;
-	color: ${COLORS.main};
-	margin-top: 20px;
+  border: none;
+  background-color: transparent;
+  width: 280px;
+  height: 24px;
+  font-family: "Farro";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 12px;
+  text-align: center;
+  color: ${COLORS.main};
+  margin-top: 20px;
 `;
 
 const Players = styled.div`
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	display: flex;
-	width: 66px;
-	height: 27px;
-	background: ${COLORS.neutral};
-	justify-content: space-evenly;
-	align-items: center;
-	border-radius: 5px;
-	font-family: 'Farro';
-	font-weight: 700;
-	color: ${COLORS.main};
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  width: 66px;
+  height: 27px;
+  background: ${COLORS.neutral};
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 5px;
+  font-family: "Farro";
+  font-weight: 700;
+  color: ${COLORS.main};
 `;
 
 const PlayersIcon = styled(BsFillPeopleFill)`
-	width: 20px;
-	height: 15px;
+  width: 20px;
+  height: 15px;
 `;
 
 const ImageContainer = styled.div`
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
