@@ -9,6 +9,7 @@ import SignUpPage from './pages/SignUpPage.jsx';
 import LogoutPage from './pages/LogoutPage.jsx';
 import CartPage from './pages/CartPage.jsx';
 import ConfirmPage from './pages/ConfirmPage.jsx';
+import HistoryPage from './pages/HistoryPage.jsx';
 import SessionContext from './context/sessionContext.js';
 import { useState, useEffect } from 'react';
 import AuthContext from './context/authContext.js';
@@ -56,6 +57,7 @@ export default function App() {
 							<Route path='/login' element={<LoginPage />} />
 							<Route path='/signup' element={<SignUpPage />} />
 							<Route path='/logout' element={<LogoutPage />} />
+							<Route path='/history' element={<HistoryPage />} />
 							<Route path='/' element={<HomePage />} />
 							<Route path='/game/:ID' element={<GamePage />} />
 							<Route path='/cart' element={<CartPage />} />
