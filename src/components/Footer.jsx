@@ -1,4 +1,4 @@
-/*eslint-disable react/prop-types*/
+/*eslint-disable react/react-in-jsx-scope*/
 import {FaShoppingCart} from 'react-icons/fa';
 import {BsPersonCircle} from 'react-icons/bs';
 import styled from 'styled-components';
