@@ -34,40 +34,73 @@ export default function HomePage(){
 
 	if(!games) return <HashLoaderScreen color={COLORS.secondary}/>;
 	
+	const category = games.reduce((acc, game) => {
+		if (!acc[game.max]) {
+			acc[game.max] = [];
+		}
+		acc[game.max].push(game);
+		return acc;
+	}, {});
+
 	return(
-		<>
+		<>{
 			<Container>
-				{games.map(({_id, name, image, price, min, max})=>{
-					return(
-						<GameCard
-							key={_id}
-							id = {_id}
-							name = {name}
-							image = {image}
-							price = {price}
-							min = {min}
-							max = {max}
-							onCart = {sessionData.cart.some(game => game.id===_id)}
-							sessionData = {sessionData}
-							setSessionData = {setSessionData}
-						/>
-					);
-				})}
+				{Object.entries(category).map(([max, games]) => (
+					<GameGroup key={max}>
+						<h2>{`Até ${max} jogadores`}</h2>
+						<GameList>
+							{games.map(({ _id, name, image, price, min, max }) => (
+								<GameCard
+									key={_id}
+									id={_id}
+									name={name}
+									image={image}
+									price={price}
+									min={min}
+									max={max}
+									onCart={sessionData.cart.some((game) => game.id === _id)}
+									sessionData={sessionData}
+									setSessionData={setSessionData}
+								/>
+							))}
+						</GameList>
+					</GameGroup>
+				))}
 			</Container>
-			<Footer 
-				total = {sessionData.total}
-				cart = {sessionData.cart}
-			/>
+		}			
+		<Footer 
+			total = {sessionData.total}
+			cart = {sessionData.cart}
+		/>
 		</>
 	);
 }
 
 const Container = styled.div`
-  padding-top: 115px;
-  padding-bottom: 70px;
-  display: grid;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 50px;
+  padding-bottom: 90px;
+`;
+const GameGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  h2 {
+    border-top: 1px solid ${COLORS.placeholder};
+    padding-top: 20px;
+    padding-left: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  } 
+`;
+const GameList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  grid-template-columns: 0.45fr 0.4fr;
-  grid-row-gap: 20px;
+  gap: 30px;
 `;
