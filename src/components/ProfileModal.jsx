@@ -53,8 +53,12 @@ export default function ProfileModal({openModal, setOpenModal, anchorEl}){
 			anchorEl ={anchorEl} 
 			sx={{p:2}}
 		>
-			<StyledBox height = "100px">
+			<StyledBox height = "180px">
 				<Options>
+					<ProfileData>
+						<ProfileName>Ver Pedidos Antigos</ProfileName>
+					</ProfileData>
+					<HistoryButton onClick={()=> navigate('/history')}>Histórico</HistoryButton>
 					<ProfileData>
 						<ProfileName>{authData.name}</ProfileName>
 					</ProfileData>
@@ -75,7 +79,7 @@ const StyledBox = muiStyled(Box)(({height}) => ({
 	'&.entering': { opacity: 0 },
 	'&.entered': { opacity: 1 },
 	height : height,
-	width : '200px',
+	width : '180px',
 	borderRadius : '5px',
 	display :'flex',
 	padding : '10px'
@@ -84,7 +88,7 @@ const StyledBox = muiStyled(Box)(({height}) => ({
 const Options = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   width: 100%;
 `;
 
@@ -135,13 +139,30 @@ const LogoutButton = styled.button`
   border: none;
   height: 30px;
   border-radius: 5px;
+  margin-top: -10px;
   &:hover{
     box-shadow: 2px 2px black;
   }
   font-style: normal;
   font-weight: 700;
   font-size: 12px;
-  align-self: flex-end;
+  align-self: flex-start;
+`;
+const HistoryButton = styled.button`
+	width: 110px;
+	background-color: ${COLORS.selected};
+	border: none;
+	height: 30px;
+	border-radius: 5px;
+  margin-top: -10px;
+	&:hover{
+	box-shadow: 2px 2px black;
+	}
+	font-style: normal;
+	font-weight: 700;
+	font-size: 12px;
+	align-self: flex-start;
+	margin-bottom: 10px;
 `;
 
 const RegisterButton = styled.button`
