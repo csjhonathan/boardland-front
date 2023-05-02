@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // import { useState, useEffet } from 'react';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import COLORS from '../constants/colors.js';
 import HashLoaderScreen from '../components/HashLoader.jsx';
@@ -21,10 +21,17 @@ export default function CartPage() {
 	const [cvv, setCvv] = useState('');
 	const [validate, setValidate] = useState('');
 
+	const [hasErrors, setHasErrors] = useState({number: false, name: false, cvv: false, validate: false});
+	const [messagesErrors, setMessagesErrors] = useState({number: '', name: '', cvv: '', validate: ''});
+
 	const { sessionData, setSessionData } = useContext(SessionContext);
 	const { setPurchaseData } = useContext(PurchaseContext);
 
 	const navigate = useNavigate();
+	const numberRef = useRef(null);
+	const nameRef = useRef(null);
+	const cvvRef = useRef(null);
+	const validateRef = useRef(null);
 
 	function handleChangeNumber(e) {
 		const { value } = e.target;
@@ -112,23 +119,42 @@ export default function CartPage() {
 		const regexCvv = /^[0-9]{3}$/;
 		const regexValidate = /^(0[1-9]|1[0-2])\/[0-9]{2}$/;
 
+		let errors = {number: false, name: false, cvv: false, validate: false};
+		let messages = {number: '', name: '', cvv: '', validate: ''};
+
 		const isNumberValid = regextNumber.test(number.replace(/\s/g, ''));
 		const isCVVValid = regexCvv.test(cvv);
 		const isValidateValid = regexValidate.test(validate);
+		const isNotValidateName = name.trim().indexOf(' ') === -1 || name.trim().length < 6;
 
-		if (!isNumberValid) {
-			alert('O número do cartão deve ser composto por 16 números');
+		if (!isValidateValid) {
+			validateRef.current.focus();
+			errors = {...errors, validate: true};
+			messages = {...messages, validate: 'Formato de data inválido'};
 		}
 
 		if (!isCVVValid) {
-			alert('O CVV deve ser composto por 3 números');
+			cvvRef.current.focus();
+			errors = {...errors, cvv: true};
+			messages = {...messages, cvv: 'O CVV deve ser composto por 3 números'};
 		}
 
-		if (!isValidateValid) {
-			alert('Formato de data inválido');
+		if (isNotValidateName){
+			nameRef.current.focus();
+			errors = {...errors, name: true};
+			messages = {...messages, name: 'São necessários nome e sobrenome neste campo!'};
 		}
 
-		if (isNumberValid && isCVVValid && isValidateValid) {
+		if (!isNumberValid) {
+			numberRef.current.focus();
+			errors = {...errors, number: true};
+			messages = {...messages, number: 'O número do cartão deve ser composto por 16 números'};
+		}
+
+		setHasErrors(errors);
+		setMessagesErrors(messages);
+
+		if (isNumberValid && isCVVValid && isValidateValid && !isNotValidateName) {
 			return true;
 		} else {
 			return false;
@@ -136,12 +162,6 @@ export default function CartPage() {
 	}
 
 	function handleSaveData() {
-		if (name.trim().indexOf(' ') === -1 || name.trim().length < 6) return alert('São necessários nome e sobrenome neste campo!');
-		if (number.trim().length === 0 || cvv.trim().length === 0 || validate.trim().length === 0) {
-			alert('Preencha todos os campos!');
-			return;
-		}
-
 		const isValid = isValidData();
 
 		if (isValid) {
@@ -206,36 +226,57 @@ export default function CartPage() {
 
 					<CreditCardContainer>
 						<CreditCardLine>
-							<CreditCardItem 
-								width='100%'
-								placeholder="Número do cartão"
-								value={number}
-								onChange={handleChangeNumber}
-								maxLength={19}
-							/>
+							<ItemContainer width='100%'>
+								<CreditCardItem
+									ref={numberRef}
+									hasError={hasErrors.number}
+									placeholder="Número do cartão"
+									value={number}
+									onChange={handleChangeNumber}
+									maxLength={19}
+								/>
+								{hasErrors.number && <span>{messagesErrors.number}</span>}
+							</ItemContainer>
 						</CreditCardLine>
 
 						<CreditCardLine>
-							<CreditCardItem width='100%' placeholder="Titular do Cartão" value={name} onChange={(e) => setName(e.target.value)}/>
+							<ItemContainer width='100%'>
+								<CreditCardItem
+									ref={nameRef}
+									hasError={hasErrors.name}
+									placeholder="Titular do Cartão"
+									value={name}
+									onChange={(e) => setName(e.target.value)}
+								/>
+								{hasErrors.name && <span>{messagesErrors.name}</span>}
+							</ItemContainer>
 						</CreditCardLine>
 
 						<CreditCardLine>
-							<CreditCardItem
-								width='50%'
-								placeholder="CVV"
-								value={cvv}
-								onChange={handleChangeCVV}
-								alignCenter
-								maxLength={3}
-							/>
-							<CreditCardItem
-								width='50%'
-								placeholder="Validade (MM/YY)"
-								alignCenter
-								value={validate}
-								onChange={handleChangeValidate}
-								maxLength={5}
-							/>
+							<ItemContainer width='50%'>
+								<CreditCardItem
+									ref={cvvRef}
+									hasError={hasErrors.cvv}
+									placeholder="CVV"
+									value={cvv}
+									onChange={handleChangeCVV}
+									alignCenter
+									maxLength={3}
+								/>
+								{hasErrors.cvv && <span>{messagesErrors.cvv}</span>}
+							</ItemContainer>
+							<ItemContainer width='50%'>
+								<CreditCardItem
+									ref={validateRef}
+									hasError={hasErrors.validate}
+									placeholder="Validade (MM/YY)"
+									alignCenter
+									value={validate}
+									onChange={handleChangeValidate}
+									maxLength={5}
+								/>
+								{hasErrors.validate && <span>{messagesErrors.validate}</span>}
+							</ItemContainer>
 						</CreditCardLine>
 					</CreditCardContainer>
 
@@ -348,25 +389,36 @@ const PriceGame = styled.p`
 	color: #000;
 `;
 
+const ItemContainer = styled.div`
+	width: ${(props) => props.width};
+	display: flex;
+	flex-direction: column;
+`;
+
 const CreditCardContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 
 	margin-top: 25px;
+
+	span {
+		font-size: 12px;
+		color: ${COLORS.logout};
+		margin-top: 5px;
+	}
 `;
 
 const CreditCardLine = styled.div`
 	width: 100%;
-	height: 40px;
 
 	display: flex;
 	gap: 10px;
 `;
 
 const CreditCardItem = styled.input`
-	width: ${(props) => props.width};
-	height: 100%;
+	width: 100%;
+	height: 40px;
 
 	border-radius: 5px;
 	background: ${COLORS.input};

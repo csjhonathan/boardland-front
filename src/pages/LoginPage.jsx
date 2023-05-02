@@ -1,6 +1,6 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import COLORS from '../constants/colors.js';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/authContext.js';
@@ -11,11 +11,14 @@ export default function LoginPage(){
 	const [form, setForm] = useState({email: '', password: '', check: false});
 	const [check, setCheck] = useState(false);
 	const [load, setLoad] = useState(false);
+	const [hasErrors, setHasErrors] = useState({email: false, password: false, messagePassword:'', messageEmail:''});
 	const {setAuthData} = useContext(AuthContext);
 	const { purchaseData } = useContext(PurchaseContext);
 
 	const navigate = useNavigate();
-  
+	const emailRef = useRef(null);
+	const passwordRef = useRef(null);
+
 	useEffect(() => {
 		if (localStorage.getItem('session')) {
 			return navigate('/');
@@ -34,9 +37,24 @@ export default function LoginPage(){
 		e.preventDefault();
 
 		const passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&#])[0-9a-zA-Z@$!%*?&#]{8,30}$/;
+		const emailRegex = /^[\w.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-		if (!passRegex.test(form.password) === true) return alert('A senha deve ter 8 ou mais caracteres e conter letras, números e caracteres especiais.');
+		let errors = {email: false, password: false, messagePassword:'', messageEmail:''};
 
+		if (!passRegex.test(form.password) === true) {
+			errors = {...errors, password: true, messagePassword: 'A senha deve ter 8 ou mais caracteres e conter letras, números e caracteres especiais.'};
+			passwordRef.current.focus();
+		}
+
+		if (!emailRegex.test(form.email) === true) {
+			errors = {...errors, email: true, messageEmail: 'Insira um e-mail válido.'};
+			emailRef.current.focus();
+		}
+
+		if (errors.email || errors.password) {
+			setHasErrors(errors);
+			return;
+		}
 
 		const body = {
 			email: form.email,
@@ -61,7 +79,23 @@ export default function LoginPage(){
 			})
 			.catch (err => {
 				setLoad(false);
-				alert(`Erro: ${err.response.data}`);
+				let errors = {email: false, password: false, messagePassword:'', messageEmail:''};
+
+				if (err.response.data && err.response.data.toString().toLowerCase().includes('senha')) {
+					passwordRef.current.focus();
+					errors = {...errors, password: true, messagePassword: err.response.data.toString()};
+				} else {
+					errors = {...errors, password: false, messagePassword: ''};
+				}
+
+				if (err.response.data && err.response.data.toString().toLowerCase().includes('e-mail')) {
+					emailRef.current.focus();
+					errors = {...errors, email: true, messageEmail: err.response.data.toString()};
+				} else {
+					errors = {...errors, email: false, messageEmail: ''};
+				}
+
+				setHasErrors(errors);
 			});
 	}
 		
@@ -70,12 +104,31 @@ export default function LoginPage(){
 			<SpaceContainer>
 				<h2>Login:</h2>
 				<form onSubmit={signIn}>
-					<input type="email" placeholder="E-mail" name="email" value={form.email} onChange={handleForm} required />
-					<input type="password" placeholder="Senha" name="password" value={form.password} onChange={handleForm} required />
+					<Input
+						placeholder="E-mail"
+						name="email"
+						value={form.email}
+						onChange={handleForm}
+						ref={emailRef}
+						hasError={hasErrors.email}
+					/>
+					{hasErrors.email && <span>{hasErrors.messageEmail}</span>}
+
+					<Input
+						type="password"
+						placeholder="Senha"
+						name="password"
+						value={form.password}
+						onChange={handleForm}
+						ref={passwordRef}
+						hasError={hasErrors.password}
+					/>
+					{hasErrors.password && <span>{hasErrors.messagePassword}</span>}
+
 					<CheckDiv>
 						<h3>Manter Logado</h3>
 						<input type="checkbox" name="check" value={check} onChange={handleCheck} />
-					</CheckDiv>          
+					</CheckDiv> 
 					<LoginButton type='submit'>{load ? <ThreeDots color="white"/> : 'Logar'}</LoginButton>
 				</form>
 				<LinkLogin to={'/signup'}>Não possui cadastro? Cadastre-se agora!</LinkLogin>
@@ -106,23 +159,7 @@ const SpaceContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 12px;
-    input {
-    width: 100%;
-    height: 60px;
-    padding: 15px;
-    background-color: ${COLORS.input};
-    border: 0;
-    border-radius: 5px;
-    font-family: 'Abel', sans-serif;
-    font-size: 16px;
-    color: ${COLORS.placeholderback};
-      ::placeholder{
-        color: ${COLORS.placeholder};
-      }
-      &:focus {
-          outline: none;
-      }
-    }
+    
     button{
     width: 100%;
     height: 60px;
@@ -135,8 +172,34 @@ const SpaceContainer = styled.div`
     font-size: 24px;
     color: ${COLORS.neutral};
     }
+
+		span {
+			font-size: 12px;
+			color: ${COLORS.logout};
+		}
   }
 `;
+const Input = styled.input `
+	width: 100%;
+	height: 60px;
+	padding: 15px;
+	background-color: ${COLORS.input};
+	border: 0;
+	border-radius: 5px;
+	font-family: 'Abel', sans-serif;
+	font-size: 16px;
+	color: ${COLORS.placeholderback};
+		::placeholder{
+			color: ${COLORS.placeholder};
+		}
+
+
+	${(props) => props.hasError ? `outline: 2px solid ${COLORS.logout}` : css`
+		&:focus {
+			outline: none;
+		}
+	`}
+	`;
 const LinkLogin = styled(Link)`
   font-family: 'Farro';
   font-weight: 700;
