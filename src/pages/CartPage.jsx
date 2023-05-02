@@ -136,7 +136,8 @@ export default function CartPage() {
 	}
 
 	function handleSaveData() {
-		if (number.trim().length === 0 || name.trim().length === 0 || cvv.trim().length === 0 || validate.trim().length === 0) {
+		if (name.trim().indexOf(' ') === -1 || name.trim().length < 6) return alert('São necessários nome e sobrenome neste campo!');
+		if (number.trim().length === 0 || cvv.trim().length === 0 || validate.trim().length === 0) {
 			alert('Preencha todos os campos!');
 			return;
 		}

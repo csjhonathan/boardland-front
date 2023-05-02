@@ -69,7 +69,7 @@ export default function GameCard({id, name, image, price, sessionData, setSessio
 					ariaLabel="three-dots-loading"
 					visible={true}
 				/> : (
-					onCart ? 'No Carrinho' : 'Coloca no carrinho'
+					onCart ? 'No Carrinho' : 'Colocar no carrinho'
 				)}
 				
 			</CardButton>
@@ -95,7 +95,7 @@ const CardContainer = styled.div`
 `;
 
 const CardImage = styled.img`
-  width: 120px;
+  width: 121px;
   height: 70px;
   border-radius: 5px;
   object-fit: cover;
@@ -119,7 +119,7 @@ const CardPrice = styled.p`
   color: ${COLORS.neutral};
 `;
 const CardButton = styled.button`
-  width: 120px;
+  width: 121px;
   height: 25px;
   background: ${({onCart}) => onCart ? COLORS.selected : COLORS.secondary};
   border-radius: 5px;
@@ -135,7 +135,7 @@ const CardButton = styled.button`
 `;
 
 const Details = styled.button`
-  width: 120px;
+  width: 121px;
   border: none;
   display: flex;
   justify-content: center;
