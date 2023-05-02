@@ -43,10 +43,12 @@ export default function LoginPage(){
 
 		if (!passRegex.test(form.password) === true) {
 			errors = {...errors, password: true, messagePassword: 'A senha deve ter 8 ou mais caracteres e conter letras, números e caracteres especiais.'};
+			passwordRef.current.focus();
 		}
 
 		if (!emailRegex.test(form.email) === true) {
 			errors = {...errors, email: true, messageEmail: 'Insira um e-mail válido.'};
+			emailRef.current.focus();
 		}
 
 		if (errors.email || errors.password) {
@@ -102,14 +104,31 @@ export default function LoginPage(){
 			<SpaceContainer>
 				<h2>Login:</h2>
 				<form onSubmit={signIn}>
-					<Input placeholder="E-mail" name="email" value={form.email} onChange={handleForm} required ref={emailRef} hasError={hasErrors.email}/>
+					<Input
+						placeholder="E-mail"
+						name="email"
+						value={form.email}
+						onChange={handleForm}
+						ref={emailRef}
+						hasError={hasErrors.email}
+					/>
 					{hasErrors.email && <span>{hasErrors.messageEmail}</span>}
-					<Input type="password" placeholder="Senha" name="password" value={form.password} onChange={handleForm} required ref={passwordRef} hasError={hasErrors.password}/>
+
+					<Input
+						type="password"
+						placeholder="Senha"
+						name="password"
+						value={form.password}
+						onChange={handleForm}
+						ref={passwordRef}
+						hasError={hasErrors.password}
+					/>
 					{hasErrors.password && <span>{hasErrors.messagePassword}</span>}
+
 					<CheckDiv>
 						<h3>Manter Logado</h3>
 						<input type="checkbox" name="check" value={check} onChange={handleCheck} />
-					</CheckDiv>          
+					</CheckDiv> 
 					<LoginButton type='submit'>{load ? <ThreeDots color="white"/> : 'Logar'}</LoginButton>
 				</form>
 				<LinkLogin to={'/signup'}>Não possui cadastro? Cadastre-se agora!</LinkLogin>
