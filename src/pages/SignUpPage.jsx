@@ -32,7 +32,7 @@ export default function SignUpPage(){
 		if (form.password !== form.passwordrepeat) return alert('As senhas não conferem!');
 
 		const body = {
-			name: form.name,
+			name: form.name.replace(/\s+$/, ''),
 			email: form.email,
 			address: form.address,
 			image: form.image,

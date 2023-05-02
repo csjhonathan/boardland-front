@@ -157,7 +157,7 @@ export default function CartPage() {
 				total: sessionData.total,
 				creditCard: {
 					number: number.replace(/\s/g, ''),
-					name,
+					name: name.replace(/\s+$/, ''),
 					cvv,
 					validate,
 				}
