@@ -21,11 +21,8 @@ export default function ConfirmPage() {
 	const session = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
 
 	function hiddenNumber(number) {
-		const newNumber = number.replace(/(.{4})/g, '$1 ');
-		const first = newNumber.slice(0, 4);
-		const second = newNumber.slice(4).replace(/\d/g, '*');
-		const hidden = first + second;
-		return hidden;
+		const newNumber = number;
+		return `**** **** **** ${newNumber.slice(-4)}`;
 	}
 
 	async function handleSendOrder() {

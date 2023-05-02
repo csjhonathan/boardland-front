@@ -34,12 +34,13 @@ export default function history(){
 			<SpaceContainer>
 				<OrderHeader>
 					<img src={authData.image}/>
-					<h2>Histórico de Pedidos de<br/>{authData.name}</h2>
+					<h2>{authData.name}<br/>[ Histórico de Pedidos ]</h2>
 				</OrderHeader>
 				<Orders>
+					<h1>Clique no pedido e veja os detalhes:</h1>
 					{myOrders.map( ord => (
 						<SepOrder key={ord._id}>
-							<Order onClick={() => handleOrderClick(ord)}>Pedido #{ord._id}</Order>
+							<Order onClick={() => handleOrderClick(ord)}><p><span>#{ord._id}</span><span>{ord.date ? ord.date : ''}</span></p></Order>
 							{activeOrder === ord._id && (
 								<>
 									<OrderDetails>
@@ -47,9 +48,8 @@ export default function history(){
 											<ListOrder key={det._id}>
 												<NamePrice>
 													<p>{det.name}</p>
-													<span>Total: R${det.price.toFixed(2).replace('.',',')}</span>
 												</NamePrice>
-												<Date>{ord.date}</Date>
+												<Date>R${det.price.toFixed(2).replace('.',',')}</Date>
 											</ListOrder>
 										))}
 									</OrderDetails>
@@ -60,7 +60,7 @@ export default function history(){
 									<AddressPayment>
 										<h2>Forma de Pagamento:</h2>
 										<h3><ion-icon name="card"></ion-icon>Crédito: {ord.creditCard.name}</h3>
-										<h3>Número: ****.****.****.{ord.creditCard.number}</h3>
+										<h3>Número: **** **** **** {ord.creditCard.number}</h3>
 									</AddressPayment>
 								</>
 							)}                            
@@ -79,14 +79,15 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
+  padding-bottom: 70px;
 `;
 const BottomContainer = styled(Link)`
     position: fixed;
     bottom: 0;
     left: 0;
     display: flex;
-    justify-content: center;
     align-items: flex-start;
+    justify-content: center;
     background-color: ${COLORS.neutral};
     width: 100%;
     padding-top: 10px;
@@ -98,23 +99,26 @@ const BottomContainer = styled(Link)`
     text-decoration: none;
 `;
 const SpaceContainer = styled.div`
-  width: 80%;
+  width: 84%;
   margin: 115px 20px 20px 20px;
   display: flex;
   flex-direction: column;
 `;
 const OrderHeader = styled.div`
+    width: 100%;
     display: flex;
     padding-bottom: 20px;
     gap: 15px;
     h2 {
+        width: 100%;
         font-family: 'Farro';
         font-weight: 700;
         font-size: 18px;
         color: ${COLORS.main};
         display: flex;
+        justify-content: center;
         align-items: center;
-        line-height: 1.2
+        line-height: 1.4;
     }
     img {
         width: 50px;
@@ -127,16 +131,23 @@ const Orders = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 10px;
-    gap: 30px;
+    gap: 12px;
+    p{
+        display: flex;
+        justify-content: space-between;
+    }
 `;
 const SepOrder = styled.div`
     display: flex;
     flex-direction: column;
+    background-color:  ${COLORS.input};
+    padding: 10px;
+    border-radius: 5px;
 `;
 const Order = styled.div`
     font-family: 'Farro';
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px;
     color: ${COLORS.main};
     display: flex;
     align-items: left;
@@ -147,11 +158,12 @@ const OrderDetails = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 10px;
+    margin-top: 5px;
 `;
 const ListOrder = styled.div`
     width: 100%;
     display: flex;
-    margin-top: 10px;
+    margin-top: 7px;;
     gap: 20px;
 `;
 const NamePrice = styled.div`
@@ -164,11 +176,7 @@ const NamePrice = styled.div`
     p {
         display: flex;
         justify-content: flex-start;
-        font-weight: 700;
-    }
-    span {
-        display: flex;
-        justify-content: flex-end;
+        font-weight: 400;
     }
 `;
 const Date = styled.div`
@@ -183,12 +191,12 @@ const AddressPayment = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 20px;
-    margin-bottom: 10px;
-    gap: 10px;
+    margin-bottom: 7px;
+    gap: 5px;
     h2{
         font-family: 'Farro';
         font-weight: 700;
-        font-size: 16px;
+        font-size: 14px;
         color: ${COLORS.main};
     }    
     h3{
