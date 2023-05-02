@@ -58,12 +58,12 @@ export default function CartPage() {
 	async function handleLoadCart() {
 		setIsLoading(true);
 
-		const session = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
+		const session = JSON.parse(localStorage.getItem('session'))?.cart || JSON.parse(sessionStorage.getItem('session'));
 
 		if (!session) {
-			const cart = JSON.parse(localStorage.getItem('cart'));
-			setSessionData(cart);
-
+			
+			const cart = JSON.parse(localStorage.getItem('cart'))?.cart || sessionData.cart;
+			setSessionData({...sessionData, cart});
 			setIsLoading(false);
 			return;
 		}

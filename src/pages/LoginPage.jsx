@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 import AuthContext from '../context/authContext.js';
 import PurchaseContext from '../context/purchaseContext.js';
 import api from '../services/api.js';
-
+import { ThreeDots } from 'react-loader-spinner';
 export default function LoginPage(){
 	const [form, setForm] = useState({email: '', password: '', check: false});
 	const [check, setCheck] = useState(false);
-
+	const [load, setLoad] = useState(false);
 	const {setAuthData} = useContext(AuthContext);
 	const { purchaseData } = useContext(PurchaseContext);
 
@@ -42,22 +42,25 @@ export default function LoginPage(){
 			email: form.email,
 			password: form.password
 		};
-
+		setLoad(true);
 		api.post('/login', body)
 			.then (res => {
 				if (check === false) {
-					setAuthData(res.data);
 					sessionStorage.setItem('session', JSON.stringify(res.data));
+					setAuthData(res.data);
+					setLoad(false);
 					if(purchaseData) return navigate('/check-order');
 					return navigate('/');
 				}
 
-				setAuthData(res.data);
 				localStorage.setItem('session', JSON.stringify(res.data));
+				setAuthData(res.data);
+				setLoad(false);
 				if(purchaseData) return navigate('/check-order');
 				navigate('/');
 			})
 			.catch (err => {
+				setLoad(false);
 				alert(`Erro: ${err.response.data}`);
 			});
 	}
@@ -73,7 +76,7 @@ export default function LoginPage(){
 						<h3>Manter Logado</h3>
 						<input type="checkbox" name="check" value={check} onChange={handleCheck} />
 					</CheckDiv>          
-					<button type='submit'>Logar</button>
+					<LoginButton type='submit'>{load ? <ThreeDots color="white"/> : 'Logar'}</LoginButton>
 				</form>
 				<LinkLogin to={'/signup'}>Não possui cadastro? Cadastre-se agora!</LinkLogin>
 			</SpaceContainer>
@@ -170,4 +173,11 @@ const CheckDiv = styled.div`
         border: 2px solid ${COLORS.main};
       }
     }
+`;
+
+const LoginButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${COLORS.neutral};
 `;
