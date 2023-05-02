@@ -12,6 +12,7 @@ export default function history(){
 	const {authData} = useContext(AuthContext);
 	useEffect(() => {
 		getHistory();
+		console.log(activeOrder);
 	},[]);
 
 	function getHistory(){
@@ -37,7 +38,7 @@ export default function history(){
 					<h2>{authData.name}<br/>[ Histórico de Pedidos ]</h2>
 				</OrderHeader>
 				<Orders>
-					{activeOrder !== undefined ? <h1>Clique no pedido e veja os detalhes:</h1> : <h4>Você ainda não tem pedidos na loja...<br/>=/</h4>}
+					{myOrders.length > 0 ? <h1>Clique no pedido e veja os detalhes:</h1> : <h4>Você ainda não tem pedidos na loja...<br/>=/</h4>}
 					{myOrders.map( ord => (
 						<SepOrder key={ord._id}>
 							<Order onClick={() => handleOrderClick(ord)}><p><span>#{ord._id}</span><span>{ord.date ? ord.date : ''}</span></p></Order>
