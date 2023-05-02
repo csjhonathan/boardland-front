@@ -10,7 +10,7 @@ import api from '../services/api.js';
 import { IoTrashBin } from 'react-icons/io5';
 import { HashLoader } from 'react-spinners';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export default function CartPage() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -431,6 +431,12 @@ const CreditCardItem = styled.input`
 	::placeholder {
 		color: ${COLORS.placeholder};
 	}
+
+	${(props) => props.hasError ? `outline: 2px solid ${COLORS.logout}` : css`
+		&:focus {
+			outline: none;
+		}
+	`}
 `;
 
 const TotalContainer = styled.div`
