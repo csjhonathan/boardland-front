@@ -12,16 +12,44 @@ import api from '../services/api.js';
 export default function HomePage(){
 	const [games, setGames] = useState(null);
 	const {sessionData, setSessionData} = useContext(SessionContext);
-	const {setAuthData} = useContext(AuthContext);
+	const {authData, setAuthData} = useContext(AuthContext);
 
 	useEffect(()=> {
 		if(localStorage.getItem('session') || sessionStorage.getItem('session')){
 			const {idUser, name, email, address, image, token} = JSON.parse(localStorage.getItem('session')) || JSON.parse(sessionStorage.getItem('session'));
 			setAuthData({idUser, name, email, address, image, token});
 		}
-		getAllGames(); 
+		getAllGames();
+		syncCart(); 
 	},[]);
+	async function syncCart(){
 
+		if(!authData || !sessionData.cart.length) return;
+
+		try{
+			const response = await api.get('/cart');
+			const synchronyzedCart = [...sessionData.cart, ...response.data.cart].reduce((arrayUnico, objetoAtual) => {
+				if (!arrayUnico.some(objetoUnico => objetoUnico.id === objetoAtual.id)) {
+					arrayUnico.push(objetoAtual);
+				}
+				return arrayUnico;
+			}, []);
+			const total = synchronyzedCart.reduce((acc, game) => acc+=game.price, 0);
+			sync(synchronyzedCart, response.data._id, response.data.idUser, total);
+		}catch(err){
+			alert(err.response.data.message);
+		}
+	}
+	async function sync(synchronyzedCart, cartId, idUser, total){
+		try{
+			await api.put('/cart', {cartId, synchronyzedCart, idUser, total});
+			const { data } = await api.get('/cart');
+			localStorage.setItem('cart', JSON.stringify(data));
+			setSessionData(data);
+		}catch(err){
+			alert(err.response.data.message);
+		}
+	}
 	async function getAllGames(){
 		try{
 			const response = await api.get('/games');

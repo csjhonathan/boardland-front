@@ -3,11 +3,12 @@ import COLORS from '../constants/colors.js';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import api from '../services/api.js';
-
+import { ThreeDots } from 'react-loader-spinner';
 export default function SignUpPage(){
 
 	const [form, setForm] = useState({name: '', email: '', address: '', image: '', password: '', passwordrepeat: ''});
 	const [inputText, setInputText] = useState(false);
+	const [load, setLoad] = useState(false);
 	const navigate = useNavigate();
   
 	function handleForm(e) {
@@ -37,12 +38,14 @@ export default function SignUpPage(){
 			image: form.image,
 			password: form.password
 		};
-
+		setLoad(true);
 		api.post('/sign-up', body)
 			.then (() => {
+				setLoad(false);
 				navigate('/login');
 			})
 			.catch (err => {
+				setLoad(false);
 				alert(`Erro: ${err.response.data.message}`);
 			});
 	}
@@ -64,7 +67,7 @@ export default function SignUpPage(){
 					<InfInput className="password" disabled={inputText === 'password' ? true : false}>Mínimo 8 dígitos com pelo menos 1 caractere especial, 1 letra maiúscula, 1 letra minúscula e 1 número</InfInput>
 					<input onFocus={handleFocus} type="password" placeholder="Confirmar senha" name="passwordrepeat" value={form.passwordrepeat} onChange={handleForm} required />
 					<InfInput className="passwordrepeat" disabled={inputText === 'passwordrepeat' ? true : false}>Repita a mesma senha digitada acima</InfInput>
-					<button type='submit'>Cadastrar</button>
+					<RegisterButton type='submit'>{load ? <ThreeDots color="white"/> : 'Cadastrar'}</RegisterButton>
 				</form>
 				<LinkLogin to={'/login'}>Já possui cadastro? Faça Login!</LinkLogin>
 			</SpaceContainer>
@@ -158,4 +161,11 @@ const InfInput = styled.div`
   &.passwordrepeat {
     display: ${props => (props.disabled === false) ? 'none' : 'flex'};
   }
+`;
+
+const RegisterButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${COLORS.neutral};
 `;
