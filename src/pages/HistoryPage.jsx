@@ -37,17 +37,17 @@ export default function history(){
 					<h2>{authData.name}<br/>[ Histórico de Pedidos ]</h2>
 				</OrderHeader>
 				<Orders>
-					<h1>Clique no pedido e veja os detalhes:</h1>
+					{activeOrder !== undefined ? <h1>Clique no pedido e veja os detalhes:</h1> : <h4>Você ainda não tem pedidos na loja...<br/>=/</h4>}
 					{myOrders.map( ord => (
 						<SepOrder key={ord._id}>
 							<Order onClick={() => handleOrderClick(ord)}><p><span>#{ord._id}</span><span>{ord.date ? ord.date : ''}</span></p></Order>
 							{activeOrder === ord._id && (
 								<>
 									<OrderDetails>
-										{ord.games.map( det => (
+										{ord.games.map( (det,ind) => (
 											<ListOrder key={det._id}>
 												<NamePrice>
-													<p>{det.name}</p>
+													<p>{ind+1} - {det.name}</p>
 												</NamePrice>
 												<Date>R${det.price.toFixed(2).replace('.',',')}</Date>
 											</ListOrder>
@@ -135,6 +135,15 @@ const Orders = styled.div`
     p{
         display: flex;
         justify-content: space-between;
+    }
+    h4{
+        width: 100%;
+        padding-top: 100px;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        line-height: 30px;
+        font-size: 16px;
     }
 `;
 const SepOrder = styled.div`
