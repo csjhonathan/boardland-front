@@ -128,7 +128,8 @@ const GameGroup = styled.div`
 `;
 const GameList = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;  
+  overflow-x: scroll;
+  scrollbar-width: none;
   gap: 30px;
 `;
