@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+# Boardland
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h2>Descrição do Projeto</h2>
 
-## Available Scripts
+O Boardland Front é uma plataforma de e-commerce desenvolvida para a compra de jogos de tabuleiro. Os usuários podem criar suas contas fornecendo informações como email, nome, senha e endereço. Após o registro, eles podem acessar suas contas, adicionar e remover itens no carrinho, visualizar detalhes dos produtos e finalizar suas compras, fornecendo informações de cartão de crédito/débito. Após a conclusão da compra, os usuários são redirecionados para uma tela de confirmação e recebem um email de confirmação da compra. Além disso, o sistema mantém um histórico de compras para cada usuário.
 
-In the project directory, you can run:
+<h2>Demo</h2>
 
-### `npm start`
+![BoardLand Demo](./public/demo/boardland.gif)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<h2>Tecnologias Utilizadas</h2>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**React**: O framework JavaScript para construção da interface do usuário.
 
-### `npm test`
+**Dayjs**: Uma biblioteca JavaScript para manipulação de datas e horas.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Axios**: Uma biblioteca para fazer requisições HTTP.
 
-### `npm run build`
+**JWT**: Para autenticação de usuários.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Local storage**: para persistência de dados no navegador do usuário.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Styled-Components**: Para estilização de componentes.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<h2>Pré-requisitos</h2>
 
-### `npm run eject`
+Antes de iniciar, certifique-se de ter o Node.js instalado na sua máquina. Você pode baixá-lo em <a href="https://nodejs.org/en">NodeJS</a>.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<h2>Instalação</h2>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+***Clone o repositório***:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+`git clone https://github.com/csjhonathan/boardland-front.git`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+***Navegue até a pasta do projeto***:
 
-## Learn More
+`cd boardland-front`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+***Instale as dependências***:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+`npm install` ou `npm i`
 
-### Code Splitting
+***Ambiente***:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Crie um arquivo `.env` como como mostra o arquivo `.env.example`
 
-### Analyzing the Bundle Size
+<h2>Uso</h2>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+***Inicie o servidor de desenvolvimento***:
 
-### Making a Progressive Web App
+`npm start`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Abra seu navegador favorito e acesse http://localhost:3000 para usar a aplicação.
 
-### Advanced Configuration
+Esta aplicação necessita de um backend para funcionar corretamente, e um backend compatível com a aplicação já foi criado, [clique aqui](https://github.com/csjhonathan/boardland-back) para acessar o repositório BoardLand-Backend, e ler instruções sobre como rodar o backend do projeto.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Caso prefira, esta aplicação está disponível para acesso publicamente na web, fique a vontade para experimentar: [BoardLand](https://projeto15-boardland-front.vercel.app/)
